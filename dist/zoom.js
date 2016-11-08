@@ -1,6 +1,6 @@
 /**
  * zoom.js - It's the best way to zoom an image
- * @version v0.0.2
+ * @version v0.0.3
  * @link https://github.com/fat/zoom.js
  * @license MIT
  */
@@ -131,6 +131,8 @@
     this._targetImageWrap = null
 
     this._targetImage = img
+    this._defaultSizeSrc = $(img).closest('.picture').attr('data-default-size');
+    this._originalSizeSrc = $(img).closest('img').attr('src');
 
     this._$body = $(document.body)
   }
@@ -146,13 +148,14 @@
       this._fullWidth = Number(img.width)
       this._zoomOriginal()
     }, this)
-    img.src = this._targetImage.src
+    img.src = this._defaultSizeSrc
   }
 
   Zoom.prototype._zoomOriginal = function () {
     this._targetImageWrap           = document.createElement('div')
     this._targetImageWrap.className = 'zoom-img-wrap'
 
+    this._targetImage.src = this._defaultSizeSrc
     this._targetImage.parentNode.insertBefore(this._targetImageWrap, this._targetImage)
     this._targetImageWrap.appendChild(this._targetImage)
 
@@ -258,6 +261,8 @@
     if (!$.support.transition) {
       return this.dispose()
     }
+
+    this._targetImage.src = this._originalSizeSrc
 
     $(this._targetImage)
       .one($.support.transition.end, $.proxy(this.dispose, this))
